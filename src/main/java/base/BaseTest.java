@@ -1,8 +1,9 @@
 package base;
 
-import drivers.ChromeDriverManager;
+import drivers.AndroidDriverManager;
 import drivers.DriverFactory;
 import drivers.DriverManager;
+import io.appium.java_client.AppiumDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -26,9 +27,9 @@ public class BaseTest {
     @BeforeClass
     public void beforeClass() {
         LOG.info("Starting beforeClass");
-        DriverManager driverManager = new ChromeDriverManager();
-        driverManager.createWebDriver();
-        WebDriver driver = driverManager.getDriver();
+        DriverManager driverManager = new AndroidDriverManager();
+        driverManager.createDriver();
+        AppiumDriver driver = driverManager.getDriver();
         DriverFactory.setDriverThreadLocal(driver);
     }
 

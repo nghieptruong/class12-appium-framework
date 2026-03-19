@@ -34,10 +34,21 @@ public class BasePage {
         return element;
     }
 
+    public WebElement waitVisibilityOf(WebElement element, long timeOutInSec) {
+        LOG.info("waitVisibilityOf... in " + timeOutInSec + "s");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSec));
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
     public WebElement waitElementToBeClickable(By locator, long timeOutInSec) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSec));
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
         return element;
+    }
+
+    public WebElement waitElementToBeClickable(WebElement element, long timeOutInSec) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSec));
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public void inputText(By locator, String value, long timeOutInSec) {
@@ -50,6 +61,15 @@ public class BasePage {
         inputText(locator, value, TimeOutConstants.DEFAULT_TIMEOUT);
     }
 
+    public void inputText(WebElement element, String value, long timeOutInSec) {
+        LOG.info("inputText: " + element + " with " + value);
+        waitVisibilityOf(element, timeOutInSec).sendKeys(value);
+    }
+
+    public void inputText(WebElement element, String value) {
+        inputText(element, value, TimeOutConstants.DEFAULT_TIMEOUT);
+    }
+
     public void click(By locator, long timeOutInSec) {
         LOG.info("click: " + locator);
         WebElement element = waitElementToBeClickable(locator, timeOutInSec);
@@ -60,6 +80,15 @@ public class BasePage {
         click(locator, TimeOutConstants.DEFAULT_TIMEOUT);
     }
 
+    public void click(WebElement element, long timeOutInSec) {
+        LOG.info("click: " + element);
+        waitElementToBeClickable(element, timeOutInSec).click();
+    }
+
+    public void click(WebElement element) {
+        click(element, TimeOutConstants.DEFAULT_TIMEOUT);
+    }
+
     public String getText(By locator, long timeOutInSec) {
         WebElement element = waitVisibilityOfElementLocated(locator, timeOutInSec);
         return element.getText();
@@ -67,5 +96,13 @@ public class BasePage {
 
     public String getText(By locator) {
         return getText(locator, TimeOutConstants.DEFAULT_TIMEOUT);
+    }
+
+    public String getText(WebElement element, long timeOutInSec) {
+        return waitVisibilityOf(element, timeOutInSec).getText();
+    }
+
+    public String getText(WebElement element) {
+        return getText(element, TimeOutConstants.DEFAULT_TIMEOUT);
     }
 }

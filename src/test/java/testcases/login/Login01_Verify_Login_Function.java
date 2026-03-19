@@ -1,60 +1,43 @@
 package testcases.login;
 
 import base.BaseTest;
-import constants.TimeOutConstants;
-import drivers.DriverFactory;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import pages.CommonDialog;
-import pages.HomePage;
-import pages.LoginPage;
+import pages.PageFactory;
+import pages.abstracts.HomePage;
+import pages.abstracts.LoginPage;
 import reports.ExtentReportManager;
-import utils.ExcelUtils;
 
-import java.time.Duration;
 
 public class Login01_Verify_Login_Function extends BaseTest {
 
-    @DataProvider(name = "login-credentials")
-    public Object[][] loginCredentialsData() {
-        Object[][] data = ExcelUtils.readAllData(System.getProperty("user.dir") + "/src/test/resources/testdata/users_credentials.xlsx", "Sheet1");
-        return data;
-    }
+    @Test(description = "Verify valid login successfully")
+    public void testValidLogin() {
 
-    @Test(description = "Verify valid login successfully", dataProvider = "login-credentials")
-    public void testValidLogin(String username, String password) {
-//        String account = "57ed1175-e5d9-47a9-836b-ff28011a57ca";
+        String username = "bod@example.com";
+        String password = "10203040";
 
-        WebDriver driver = DriverFactory.getDriver();
+        HomePage homePage = PageFactory.getHomePage();
+        LoginPage loginPage = PageFactory.getLoginPage();
 
-        HomePage homePage = new HomePage(driver);
-        LoginPage loginPage = new LoginPage(driver);
-        CommonDialog commonDialog = new CommonDialog(driver);
+        //Step 1: Click main menu
+        ExtentReportManager.info("Step 1: Click main menu");
+        LOG.info("Step 1: Click main menu");
+        homePage.getNavigationBar().clickMainMenu();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        //Step 2: Click 'Log in' menu item
+        ExtentReportManager.info("Step 2: Click 'Log in' menu item");
+        LOG.info("Step 2: Click 'Log in' menu item");
+        homePage.getNavigationBar().navigateToLoginPage();
 
-        //Step 1: Go to https://demo1.cybersoft.edu.vn/
-        ExtentReportManager.info("Step 1: Go to https://demo1.cybersoft.edu.vn/");
-        LOG.info("Step 1: Go to https://demo1.cybersoft.edu.vn/");
-        driver.get("https://demo1.cybersoft.edu.vn/");
-        driver.manage().window().maximize(); // maximize browser
-
-        //Step 2: Click 'Đăng Nhập' link on the top right
-        ExtentReportManager.info("Step 2: Click 'Đăng Nhập' link on the top right");
-        LOG.info("Step 2: Click 'Đăng Nhập' link on the top right");
-        homePage.getTopBarNavigation().navigateToLoginPage();
-
-        //Step 3: Enter account login
-        ExtentReportManager.info("Step 3: Enter account login");
-        LOG.info("Step 3: Enter account login");
+        //Step 3: Enter username
+        ExtentReportManager.info("Step 3: Enter username");
+        LOG.info("Step 3: Enter username");
         loginPage.enterAccount(username);
 
-        //Step 4: Enter password login
-        ExtentReportManager.info("Step 4: Enter password login");
-        LOG.info("Step 4: Enter password login");
+        //Step 4: Enter password
+        ExtentReportManager.info("Step 4: Enter password");
+        LOG.info("Step 4: Enter password");
         loginPage.enterPassword(password);
 
         //Step 5: Click login button
@@ -65,20 +48,18 @@ public class Login01_Verify_Login_Function extends BaseTest {
         //Step 6: Verify login successfully with valid account
         ExtentReportManager.info("Step 6: Verify login successfully with valid account");
         LOG.info("Step 6: Verify login successfully with valid account");
-        //VP1: Check 'Đăng nhập thành công' message display
-        ExtentReportManager.info("VP1: Check 'Đăng nhập thành công' message display");
-        LOG.info("VP1: Check 'Đăng nhập thành công' message display");
-        String recordedLoginMsg = commonDialog.getDialogMessage();
-        Assert.assertEquals(recordedLoginMsg, "Đăng nhập thành công", "'Đăng Nhập Thành Công' message does not display !!!");
+        //VP1: Verify user is navigated to Products page
+        ExtentReportManager.info("VP1: Verify user is navigated to Products page");
+        LOG.info("VP1: Verify user is navigated to Products page");
+        String recordedTitle = homePage.getTitle();
+        Assert.assertEquals(recordedTitle, "Products", "Products title not display");
 
-        //VP2: User profile name display on the top
-        ExtentReportManager.info("VP2: User profile name display on the top");
-        LOG.info("VP2: User profile name display on the top");
-        //TO-DO: Implement later
+        //VP2: Verify Log out menu item displays
+        ExtentReportManager.info("VP2: Verify Log out menu item displays");
+        LOG.info("VP2: Verify Log out menu item displays");
+        homePage.getNavigationBar().clickMainMenu();
+        boolean isLogoutDisplayed = homePage.getNavigationBar().isLogoutDisplayed();
+        Assert.assertTrue(isLogoutDisplayed, "Log out menu item not display");
 
-        //Log out after test
-        commonDialog.waitForDialogNotDisplayed(TimeOutConstants.DEFAULT_TIMEOUT);
-        homePage.getTopBarNavigation().logOut();
-        homePage.getTopBarNavigation().waitForLoginLinkDisplayed(TimeOutConstants.DEFAULT_TIMEOUT);
     }
 }
