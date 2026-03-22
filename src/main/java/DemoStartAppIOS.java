@@ -1,5 +1,3 @@
-package drivers;
-
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
 
@@ -7,10 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 
-public class IOSDriverManager extends DriverManager {
-
-    @Override
-    public void createDriver() {
+public class DemoStartAppIOS {
+    public static void main(String[] args) throws MalformedURLException, InterruptedException {
         XCUITestOptions iosOptions = new XCUITestOptions();
         iosOptions.setPlatformName("ios");
         iosOptions.setAutomationName("XCUITest");
@@ -19,11 +15,11 @@ public class IOSDriverManager extends DriverManager {
         iosOptions.setBundleId("com.saucelabs.mydemo.app.ios");
         iosOptions.setNewCommandTimeout(Duration.ofSeconds(300));
 
-        try {
-            this.driver = new IOSDriver(new URL("http://127.0.0.1:4723/"), iosOptions);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        IOSDriver driver = new IOSDriver(new URL("http://127.0.0.1:4723/"), iosOptions);
+
+        Thread.sleep(3000);
+
+        driver.quit();
 
     }
 }

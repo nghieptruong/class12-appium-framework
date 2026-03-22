@@ -1,8 +1,6 @@
 package base;
 
-import drivers.AndroidDriverManager;
-import drivers.DriverFactory;
-import drivers.DriverManager;
+import drivers.*;
 import io.appium.java_client.AppiumDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import reports.ExtentReportManager;
+import utils.ConfigManager;
 
 import java.lang.reflect.Method;
 
@@ -22,12 +21,15 @@ public class BaseTest {
         LOG.info("Starting beforeSuite");
         // Khoi tao extent report
         ExtentReportManager.initializeExtentReports();
+        ConfigManager.loadProperties();
     }
 
     @BeforeClass
     public void beforeClass() {
         LOG.info("Starting beforeClass");
-        DriverManager driverManager = new AndroidDriverManager();
+        String platform = ConfigManager.getProperty("platform");
+        DriverManager driverManager = DriverManagerFactory.getDriverManager(platform);
+
         driverManager.createDriver();
         AppiumDriver driver = driverManager.getDriver();
         DriverFactory.setDriverThreadLocal(driver);

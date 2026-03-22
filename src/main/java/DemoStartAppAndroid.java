@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 
-public class DemoStartApp {
+public class DemoStartAppAndroid {
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
         UiAutomator2Options androidOptions = new UiAutomator2Options();
         androidOptions.setPlatformName("Android");
